@@ -1,21 +1,19 @@
-package com.pm.ms_usuarios;
+package com.pm.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
- * Microservicio de Usuarios
- * Puerto: 8080 (o configurado en propiedades)
+ * API Gateway - Punto de entrada centralizado
+ * Se ejecuta en: http://localhost:8080
  */
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients
-public class MsUsuariosApplication {
+public class ApiGatewayApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MsUsuariosApplication.class, args);
+        SpringApplication.run(ApiGatewayApplication.class, args);
     }
 
 }

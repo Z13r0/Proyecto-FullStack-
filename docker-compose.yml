@@ -1,0 +1,164 @@
+version: '3.8'
+
+services:
+  # ==================== DATABASE ====================
+  mysql:
+    image: mysql:8.0.36-alpine
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_DATABASE: db_plataforma_multimedia
+      MYSQL_USER: ${DB_USERNAME:-app_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-app_password}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - microservices-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+    restart: unless-stopped
+
+  # ==================== SERVICE DISCOVERY ====================
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    container_name: eureka_server
+    ports:
+      - "8761:8761"
+    environment:
+      JAVA_OPTS: "-Xmx256m -Xms128m"
+    networks:
+      - microservices-network
+    depends_on:
+      - mysql
+    restart: unless-stopped
+
+  # ==================== API GATEWAY ====================
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api_gateway
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      DB_USERNAME: ${DB_USERNAME:-app_user}
+      DB_PASSWORD: ${DB_PASSWORD:-app_password}
+      JAVA_OPTS: "-Xmx512m -Xms256m"
+    networks:
+      - microservices-network
+    depends_on:
+      eureka-server:
+        condition: service_started
+    restart: unless-stopped
+
+  # ==================== MS USUARIOS ====================
+  ms-usuarios:
+    build:
+      context: ./ms_usuarios\ \(TERMINADO\)
+      dockerfile: Dockerfile
+    container_name: ms_usuarios
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_APPLICATION_NAME: ms-usuarios
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_plataforma_multimedia?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-app_user}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-app_password}
+      JAVA_OPTS: "-Xmx512m -Xms256m"
+    networks:
+      - microservices-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    restart: unless-stopped
+
+  # ==================== MS PELÍCULAS ====================
+  ms-peliculas:
+    build:
+      context: ./ms_peliculas\ \(TERMINADO\)
+      dockerfile: Dockerfile
+    container_name: ms_peliculas
+    ports:
+      - "8082:8081"
+    environment:
+      SPRING_APPLICATION_NAME: ms-peliculas
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_plataforma_multimedia?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-app_user}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-app_password}
+      JAVA_OPTS: "-Xmx512m -Xms256m"
+    networks:
+      - microservices-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    restart: unless-stopped
+
+  # ==================== MS PERFILES ====================
+  ms-perfiles:
+    build:
+      context: ./ms_perfiles\(TERMINADO\)
+      dockerfile: Dockerfile
+    container_name: ms_perfiles
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_APPLICATION_NAME: ms-perfiles
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_plataforma_multimedia?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-app_user}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-app_password}
+      JAVA_OPTS: "-Xmx512m -Xms256m"
+    networks:
+      - microservices-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    restart: unless-stopped
+
+  # ==================== MS SUSCRIPCIONES ====================
+  ms-suscripciones:
+    build:
+      context: ./ms_suscripciones\(TERMINADO\)
+      dockerfile: Dockerfile
+    container_name: ms_suscripciones
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_APPLICATION_NAME: ms-suscripciones
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_plataforma_multimedia?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-app_user}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-app_password}
+      JAVA_OPTS: "-Xmx512m -Xms256m"
+    networks:
+      - microservices-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  microservices-network:
+    driver: bridge

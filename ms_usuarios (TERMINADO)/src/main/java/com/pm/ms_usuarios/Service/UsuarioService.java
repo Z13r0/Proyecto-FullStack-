@@ -2,19 +2,21 @@ package com.pm.ms_usuarios.Service;
 
 import com.pm.ms_usuarios.Model.Usuario;
 import com.pm.ms_usuarios.Repository.UsuarioRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
+/**
+ * Servicio de gestión de usuarios
+ */
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
@@ -22,7 +24,7 @@ public class UsuarioService {
 
     public Usuario findById(Long id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado con id: " + id));
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
     }
 
     public Usuario save(Usuario usuario) {
@@ -31,8 +33,14 @@ public class UsuarioService {
 
     public void delete(Long id) {
         if (!usuarioRepository.existsById(id)) {
-            throw new NoSuchElementException("Usuario no encontrado con id: " + id);
+            throw new RuntimeException("Usuario no encontrado con ID: " + id);
         }
         usuarioRepository.deleteById(id);
     }
+
+    public Usuario findByEmail(String email) {
+        return usuarioRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
+    }
+
 }

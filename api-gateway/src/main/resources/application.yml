@@ -1,0 +1,81 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        # MS Usuarios
+        - id: ms-usuarios
+          uri: lb://ms-usuarios
+          predicates:
+            - Path=/api/usuarios/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: usuariosCircuitBreaker
+                fallback-uri: forward:/fallback/usuarios
+        
+        # MS Películas
+        - id: ms-peliculas
+          uri: lb://ms-peliculas
+          predicates:
+            - Path=/api/peliculas/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: peliculasCircuitBreaker
+                fallback-uri: forward:/fallback/peliculas
+        
+        # MS Perfiles
+        - id: ms-perfiles
+          uri: lb://ms-perfiles
+          predicates:
+            - Path=/api/perfiles/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: perfilesCircuitBreaker
+                fallback-uri: forward:/fallback/perfiles
+        
+        # MS Suscripciones
+        - id: ms-suscripciones
+          uri: lb://ms-suscripciones
+          predicates:
+            - Path=/api/suscripciones/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: suscripcionesCircuitBreaker
+                fallback-uri: forward:/fallback/suscripciones
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+    instance-id: ${spring.application.name}:${server.port}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,gateway
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoint:
+    health:
+      show-details: always
