@@ -1,0 +1,11 @@
+com\pm\ms_peliculas\Client\PerfilClient.class
+com\pm\ms_peliculas\Controller\PeliculaController.class
+com\pm\ms_peliculas\Repository\PeliculaRepository.class
+com\pm\ms_peliculas\MsPeliculasApplication.class
+com\pm\ms_peliculas\DTO\PeliculaDTO.class
+com\pm\ms_peliculas\Model\Pelicula.class
+com\pm\ms_peliculas\Service\PeliculaService.class
+com\pm\ms_peliculas\Client\UsuarioClient.class
+com\pm\ms_peliculas\DTO\UsuarioDTO.class
+com\pm\ms_peliculas\Config\DataInitializer.class
+com\pm\ms_peliculas\Client\SuscripcionClient.class

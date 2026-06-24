@@ -1,10 +1,14 @@
 package com.pm.ms_peliculas.Service;
 
 import com.pm.ms_peliculas.Client.UsuarioClient;
+import com.pm.ms_peliculas.Client.PerfilClient;
+import com.pm.ms_peliculas.Client.SuscripcionClient;
 import com.pm.ms_peliculas.DTO.UsuarioDTO;
 import com.pm.ms_peliculas.Model.Pelicula;
 import com.pm.ms_peliculas.Repository.PeliculaRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,17 +17,20 @@ import java.util.NoSuchElementException;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class PeliculaService {
 
-    @Autowired
     private UsuarioClient usuarioClient;
+
+    private PerfilClient perfilClient;
+
+    private SuscripcionClient suscripcionClient;
+
+    private PeliculaRepository peliculaRepository;
 
     public UsuarioDTO obtenerUsuario(Long id) {
         return usuarioClient.buscarUsuarioPorId(id);
     }
-
-    @Autowired
-    private PeliculaRepository peliculaRepository;
 
     public List<Pelicula> findAll() {
         return peliculaRepository.findAll();
@@ -49,7 +56,7 @@ public class PeliculaService {
         return peliculaRepository.findByTitulo(titulo);
     }
 
-    public List<Pelicula> findByClasificacionEdad(String clasificacionEdad) {
-        return peliculaRepository.findByClasificacionEdad(clasificacionEdad);
+    public List<Pelicula> findByClasificacionEdad(String clasificacion) {
+        return peliculaRepository.findByClasificacionEdad(clasificacion);
     }
 }
