@@ -1,0 +1,10 @@
+com\pm\ms_suscripciones\DTO\SuscripcionResponseDTO.class
+com\pm\ms_suscripciones\DTO\UsuarioDTO.class
+com\pm\ms_suscripciones\Repository\SuscripcionRepository.class
+com\pm\ms_suscripciones\DTO\SuscripcionRequestDTO.class
+com\pm\ms_suscripciones\Exception\GlobalExceptionHandler.class
+com\pm\ms_suscripciones\Services\SuscripcionService.class
+com\pm\ms_suscripciones\MsSuscripcionesApplication.class
+com\pm\ms_suscripciones\Client\UsuarioClient.class
+com\pm\ms_suscripciones\Controller\SuscripcionController.class
+com\pm\ms_suscripciones\Model\Suscripcion.class
